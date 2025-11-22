@@ -1,1 +1,1 @@
-# Student_Course_Management_System
+# Smart_Campus_Management_System
