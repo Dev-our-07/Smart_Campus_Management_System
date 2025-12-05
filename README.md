@@ -54,11 +54,11 @@ This project provides a campus management system with various features to manage
 3.  Use the various modules to manage campus information.
 
 ## Creators/Collaborators
-   Name      :   Roll no
-Bhoomija Sharma: 241103039
-Shagun Padha: 241103055
-Devjeet Kour: 241103060
-Divya Kumari: 241103064
+*   Name      :   Roll no
+*   Bhoomija Sharma: 241103039
+*   Shagun Padha: 241103055
+*   Devjeet Kour: 241103060
+*   Divya Kumari: 241103064
 
 ## Notes
 *   This is a comprehensive system and should be used as a starting point for further development.
