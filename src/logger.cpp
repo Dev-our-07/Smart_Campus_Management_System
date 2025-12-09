@@ -1,5 +1,6 @@
 #include "Logger.h"
 #include <fstream>
+#include<iostream>
 #include <ctime>
 #include <cstring>
 using namespace std;
