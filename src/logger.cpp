@@ -28,6 +28,10 @@ void Logger::log(const string &level, const string &message)
     time_t currentTime = time(0);
     char *dt = ctime(&currentTime);
 
+    // remove newline character
+    dt[strlen(dt) - 1] = '\0';
+    
+
     // file write
     myfile << "[" << dt << "]" << " " << "[" << level << "]" << message << endl;
 
