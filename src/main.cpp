@@ -2,9 +2,12 @@
 
 #include <iostream>
 #include <string>
+#include "Logger.h"
 using namespace std;
 
 int main(){
+    // Logger start and log file set
+    Logger logger("logs/events.log");
     //1. Welcome Message
     cout<<"==============O(n v n)O==============="<<endl<<endl;
 
@@ -31,21 +34,29 @@ int main(){
         case 1:
             cout<<endl<<"You have chosen to Login."<<endl;
             //Login functionality would be implemented here
+            //////////////////////////////  
+
+            logger.log("INFO", "User attempted to log in.");
             break;
 
         case 2:
             cout<<endl<<"You have chosen to Register."<<endl;
             //Registration functionality would be implemented here
+            /////////////////////////////
+
+            logger.log("INFO", "User attempted to register.");
             break;
 
         case 3:
             cout<<endl<<"Exiting the system. Goodbye!"<<endl;
             //Ends the program
+            logger.log("INFO", "User exited the system.");
             break;
 
         default:
             cout<<endl<<"Invalid choice. Please restart the program and select a valid option."<<endl; 
             //Handles invalid input and breaks out of the switch-case
+            logger.log("WARNING", "User entered an invalid choice in the main menu.");
     }
 
 
