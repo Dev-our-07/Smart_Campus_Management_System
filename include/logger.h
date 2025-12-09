@@ -1,4 +1,5 @@
-#include <iostream>
+#ifndef LOGGER_H
+#define LOGGER_H
 #include <string>
 using namespace std;
 
@@ -14,3 +15,4 @@ public:
     // To records events -> level + message
     void log(const string &level, const string &message);
 };
+#endif // LOGGER_H
