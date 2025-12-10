@@ -3,6 +3,7 @@
 This project provides a campus management system with various features to manage student, faculty, and staff information. It includes modules for authentication, student management, faculty management, course management, and more.
 
 ## Modules
+# Assignment 1
 1.  **Module A: Project Setup & Coding Structure**
     *   Project directory created with: src/, include/, data/, logs/, tests/, build/
     *   README.md and Makefile/CMakeLists.txt created
@@ -36,6 +37,9 @@ This project provides a campus management system with various features to manage
     *   Enroll & drop students
     *   Course persistence using file handling
     *   All actions logged
+
+# Assignment 2
+To be added soon...
 
 ## Features
 *   User authentication and authorization
