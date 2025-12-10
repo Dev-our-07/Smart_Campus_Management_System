@@ -1,167 +1,214 @@
-/**
- * @file main.cpp
- * @brief Implementation of the main menu for the Smart Campus Management System.
- */
-
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <filesystem>
-#include "../include/auth.h" ///< Local header file for authentication functionality.
+#include "../include/auth.h"
+#include "../include/CourseManager.h"
+#include "../include/course.h"
+#include "../include/Logger.h"
 
-#if defined(__cpp_lib_filesystem)   
-namespace fs = std::filesystem;
+#if defined(__cpp_lib_filesystem)
+namespace fs = std::filesystem; ///< Use standard filesystem if available
 #else
 #include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+namespace fs = std::experimental::filesystem; ///< Fallback to experimental filesystem
 #endif
 
-//not using "using namespace std;" to avoid namespace pollution
-
-// Resolve and ensure the data directory exists regardless of whether the app
-// is run from the project root or the src folder.
-fs::path resolveDataDir() {
-    fs::path cwdData("data");
-    fs::path parentData = fs::path("..") / "data";
-
-    if (fs::exists(parentData)) {
-        return parentData;
-    }
-
-    if (fs::exists(cwdData)) {
-        return cwdData;
-    }
-
-    std::error_code ec;
-    if (fs::create_directories(parentData, ec)) {
-        return parentData;
-    }
-
-    ec.clear();
-    if (fs::create_directories(cwdData, ec)) {
-        return cwdData;
-    }
-
-    return parentData; // Fallback; caller will handle open failures.
-}
-
-void dashboard(const std::string& username) {
-    std::cout << "\n--- Dashboard ---\n";
-    std::cout << "Welcome, " << username << "!" << std::endl;
-    std::cout << "(Stub) Add dashboard features here." << std::endl;
-}
-
-void registerUser(Auth& auth) {
-    std::string username, password;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
-
-    std::string hashedPassword = auth.generateHash(password);
-    const fs::path dataDir = resolveDataDir();
-    const fs::path userFile = dataDir / (username + ".txt");
-
-    std::ofstream file(userFile.string());
-    if (file.is_open()) {
-        file << hashedPassword;
-        file.close();
-        std::cout << "Registration successful!" << std::endl;
-        std::cout << "Username: " << username << "\nStored hash: " << hashedPassword << std::endl;
-        std::cout << "Saved at: " << userFile.string() << std::endl;
-    } else {
-        std::cout << "Error creating user file at " << userFile.string() << std::endl;
-    }
-}
-
-bool loginUser(Auth& auth, std::string& outUsername, std::string& outStoredHash) {
-    std::string username, password;
-    std::cout << "Enter username: ";
-    std::cin >> username;
-    std::cout << "Enter password: ";
-    std::cin >> password;
-
-    const fs::path dataDir = resolveDataDir();
-    const fs::path userFile = dataDir / (username + ".txt");
-
-    std::ifstream file(userFile.string());
-    if (file.is_open()) {
-        std::string storedHash;
-        file >> storedHash;
-        file.close();
-
-        if (auth.verifyPassword(password, storedHash)) {
-            outUsername = username;
-            outStoredHash = storedHash;
-            return true;
-        }
-    } else {
-        std::cout << "User not found at path: " << userFile.string() << std::endl;
-    }
-
-    return false;
-}
-
 /**
- * @brief Main entry point of the program.
- * 
- * @return int Exit status of the program.
+ * @brief Main function for the Smart Campus Management System
+ *
+ * Handles user authentication (login/register) and course management menu.
+
+ *
+ * @return int Exit status of the program
  */
-int main(){
-    Auth auth; ///< Authentication object for testing.
+int main()
+{
+    /// Initialize the logger to track all events in the system
+    Logger logger("logs/events.log");
 
-    while (true) {
-        // 1. Welcome Message
-        std::cout<<"==============O(n v n)O==============="<<std::endl<<std::endl;
+    /// Authentication object for password hashing and verification
+    Auth auth;
 
-        std::cout<<"Welcome to Smart Campus Management System"<<std::endl;
-        std::cout<<"Kindly read the instructions and choose your option to interact further with the system."<<std::endl<<std::endl;
+    /// CourseManager object to manage courses
+    CourseManager cm("courses.txt");
 
-        // Break line
-        std::cout<<"==============O(n v n)O==============="<<std::endl;
+    /// Resolve and create data directory for user files
+    fs::path cwdData("data");                      ///< Current working directory data path
+    fs::path parentData = fs::path("..") / "data"; ///< Parent directory data path
+    fs::path dataDir;
 
-        // 2. Main Menu
-        std::cout<<std::endl<<"M A I N     M E N U"<<std::endl<<std::endl;
+    if (fs::exists(parentData))
+        dataDir = parentData;
+    else if (fs::exists(cwdData))
+        dataDir = cwdData;
+    else
+    {
+        std::error_code ec;
+        if (fs::create_directories(parentData, ec))
+            dataDir = parentData;
+        else if (fs::create_directories(cwdData, ec))
+            dataDir = cwdData;
+        else
+            dataDir = parentData; ///< Fallback if creation fails
+    }
 
-        std::cout<<"Select the corresponding number to access the feature:"<<std::endl;
-        std::cout<<"1. Register"<<std::endl;
-        std::cout<<"2. Login"<<std::endl;
-        std::cout<<"3. Exit"<<std::endl;
+    // ================= Main Menu Loop =================
+    while (true)
+    {
+        std::cout << "\n==============O(n v n)O===============" << std::endl;
+        std::cout << "Welcome to Smart Campus Management System" << std::endl;
+        std::cout << "1. Login" << std::endl;
+        std::cout << "2. Register" << std::endl;
+        std::cout << "3. Exit" << std::endl;
+        std::cout << "Enter your choice: ";
+
         int choice;
-        std::cout<<std::endl<<"Enter your choice: ";
-        std::cin>>choice;
-        std::cin.ignore(); // Clear the newline left in the input buffer
+        std::cin >> choice;
 
-        /**
-         * @brief Switch-case structure to handle user choice.
-         */
-        switch(choice)
+        // ---------------- LOGIN SECTION ----------------
+        if (choice == 1)
         {
-            case 1:
-                registerUser(auth);
-                break;
+            std::string username, password;
+            std::cout << "Enter username: ";
+            std::cin >> username;
+            std::cout << "Enter password: ";
+            std::cin >> password;
 
-            case 2: {
-                std::string loggedUser;
+            fs::path userFile = dataDir / (username + ".txt");
+            std::ifstream file(userFile.string());
+            if (file.is_open())
+            {
                 std::string storedHash;
-                if (loginUser(auth, loggedUser, storedHash)) {
-                    std::cout << "Login successful!" << std::endl;
-                    std::cout << "Username: " << loggedUser << "\nStored hash: " << storedHash << std::endl;
-                    dashboard(loggedUser);
-                } else {
-                    std::cout << "Invalid credentials. Redirecting to registration..." << std::endl;
-                    registerUser(auth);
+                file >> storedHash;
+                file.close();
+
+                /// Verify password
+                if (auth.verifyPassword(password, storedHash))
+                {
+                    std::cout << "Login successful! Welcome, " << username << std::endl;
+                    logger.log("INFO", "Login", "User logged in: " + username);
+
+                    // =============== COURSE MANAGEMENT MENU ===============
+                    while (true)
+                    {
+                        std::cout << "\n====== COURSE MANAGEMENT MENU ======" << std::endl;
+                        std::cout << "1. Add Course" << std::endl;
+                        std::cout << "2. View All Courses" << std::endl;
+                        std::cout << "3. Enroll Student" << std::endl;
+                        std::cout << "4. Drop Student" << std::endl;
+                        std::cout << "5. Delete Course" << std::endl;
+                        std::cout << "6. Logout / Back to Main Menu" << std::endl;
+                        std::cout << "Enter your choice: ";
+
+                        int c_choice;
+                        std::cin >> c_choice;
+                        if (c_choice == 6)
+                            break; ///< Logout to main menu
+
+                        // ---------- Course Menu Options ----------
+                        switch (c_choice)
+                        {
+                        case 1:
+                        { ///< Add a new course
+                            std::string id, title;
+                            int credits, capacity;
+                            std::cout << "Enter Course ID: ";
+                            std::cin >> id;
+                            std::cout << "Enter Course Title: ";
+                            std::cin.ignore();
+                            std::getline(std::cin, title);
+                            std::cout << "Enter Credits: ";
+                            std::cin >> credits;
+                            std::cout << "Enter Capacity: ";
+                            std::cin >> capacity;
+                            Course c(title, id, capacity, credits);
+                            cm.addCourse(c);
+                            break;
+                        }
+                        case 2: ///< View all courses
+                            cm.printAllCourses();
+                            break;
+                        case 3:
+                        { ///< Enroll student in a course
+                            std::string id;
+                            std::cout << "Enter Course ID to enroll student: ";
+                            std::cin >> id;
+                            cm.enrollStudent(id);
+                            break;
+                        }
+                        case 4:
+                        { ///< Drop student from course
+                            std::string id;
+                            std::cout << "Enter Course ID to drop student: ";
+                            std::cin >> id;
+                            cm.dropStudent(id);
+                            break;
+                        }
+                        case 5:
+                        { ///< Delete a course
+                            std::string id;
+                            std::cout << "Enter Course ID to delete: ";
+                            std::cin >> id;
+                            cm.deleteCourse(id);
+                            break;
+                        }
+                        default: ///< Invalid option
+                            std::cout << "Invalid choice!" << std::endl;
+                        }
+                    }
                 }
-                break;
+                else
+                { ///< Wrong password
+                    std::cout << "Invalid credentials!" << std::endl;
+                    logger.log("WARNING", "Login", "Failed login attempt for: " + username);
+                }
             }
+            else
+            { ///< User file not found
+                std::cout << "User not found. Please register first." << std::endl;
+            }
+        }
 
-            case 3:
-                std::cout<<std::endl<<"Exiting the system. Goodbye!"<<std::endl;
-                return 0;
+        // ---------------- REGISTRATION SECTION ----------------
+        else if (choice == 2)
+        {
+            std::string username, password;
+            std::cout << "Enter username: ";
+            std::cin >> username;
+            std::cout << "Enter password: ";
+            std::cin >> password;
 
-            default:
-                std::cout<<std::endl<<"Invalid choice. Please restart the program and select a valid option."<<std::endl; 
-                // Handles invalid input and breaks out of the switch-case
+            fs::path userFile = dataDir / (username + ".txt");
+            std::ofstream file(userFile.string());
+            if (file.is_open())
+            {
+                std::string hashedPassword = auth.generateHash(password);
+                file << hashedPassword;
+                file.close();
+                std::cout << "Registration successful!" << std::endl;
+                logger.log("INFO", "Register", "User registered: " + username);
+            }
+            else
+            { ///< Error creating user file
+                std::cout << "Error creating user file!" << std::endl;
+                logger.log("ERROR", "Register", "Failed to create user file: " + userFile.string());
+            }
+        }
+
+        // ---------------- EXIT ----------------
+        else if (choice == 3)
+        {
+            std::cout << "Exiting system. Goodbye!" << std::endl;
+            logger.log("INFO", "MainMenu", "System exited by user.");
+            break;
+        }
+
+        // ---------------- INVALID CHOICE ----------------
+        else
+        {
+            std::cout << "Invalid choice. Try again." << std::endl;
+            logger.log("WARNING", "MainMenu", "Invalid menu choice entered.");
         }
     }
 
