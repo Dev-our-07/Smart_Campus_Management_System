@@ -1,3 +1,11 @@
 [Tue Dec  9 13:32:09 2025
 ] [INFO]User exited the system.
 [Tue Dec  9 13:35:04 2025] [INFO]User attempted to register.
+[Thu Dec 11 09:44:34 2025] [INFO]User attempted to log in.
+[Thu Dec 11 09:45:47 2025] [INFO]User attempted to register.
+[Thu Dec 11 09:48:24 2025
+] [INFO] [Register] User registered: shagun
+[Thu Dec 11 09:48:43 2025
+] [INFO] [Login] User logged in: shagun
+[Thu Dec 11 09:49:16 2025
+] [INFO] [CourseManager] Course added: Hmt150

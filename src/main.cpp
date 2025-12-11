@@ -22,8 +22,8 @@ namespace fs = std::experimental::filesystem; ///< Fallback to experimental file
  *
  * @return int Exit status of the program
  */
-int main()
-{
+int main(){
+
     /// Initialize the logger to track all events in the system
     Logger logger("logs/events.log");
 
@@ -130,7 +130,7 @@ int main()
                             cm.printAllCourses();
                             break;
                         case 3:
-                        { ///< Enroll student in a course
+                        {///< Enroll student in a course
                             std::string id;
                             std::cout << "Enter Course ID to enroll student: ";
                             std::cin >> id;
