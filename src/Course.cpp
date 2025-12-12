@@ -23,18 +23,28 @@ Course::Course(string t, string cId, int cap, int cred, int ErS)
 }
 
 // Getters
-string Course::getTitle() const { return title; }
-string Course::getCourseId() const { return courseId; }
-int Course::getCapacity() const { return capacity; }
-int Course::getCredits() const { return credits; }
-int Course::getEnrolledStudents() const { return enrolledStudents; }
+string Course::getTitle() const
+ { return title; }
+string Course::getCourseId() const 
+{ return courseId; }
+int Course::getCapacity() const
+ { return capacity; }
+int Course::getCredits() const
+ { return credits; }
+int Course::getEnrolledStudents() const 
+{ return enrolledStudents; }
 
 // Setters
-void Course::setTitle(const string &t) { title = t; }
-void Course::setCourseId(const string &cId) { courseId = cId; }
-void Course::setCapacity(int c) { capacity = c; }
-void Course::setCredits(int cred) { credits = cred; }
-void Course::setEnrolledStudents(int enrolled) { enrolledStudents = enrolled; }
+void Course::setTitle(const string &t)
+ { title = t; }
+void Course::setCourseId(const string &cId) 
+{ courseId = cId; }
+void Course::setCapacity(int c)
+ { capacity = c; }
+void Course::setCredits(int cred)
+ { credits = cred; }
+void Course::setEnrolledStudents(int enrolled) 
+{ enrolledStudents = enrolled; }
 
 // Enrollment methods
 bool Course::enrollStudent()
