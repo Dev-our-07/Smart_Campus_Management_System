@@ -21,7 +21,10 @@ class Person{
      * param eml email of the email
      */ 
 
-    Person(string n,string eml);
+    Person(string n,string eml){
+        name=n;
+        email=eml;
+    }
 
     /**
      * @brief pure virtual function to show profile information
@@ -31,7 +34,7 @@ class Person{
     /**
      * @brief virtual destructor
      */
-    virtual ~Person();
+    virtual ~Person(){}
 
 
 

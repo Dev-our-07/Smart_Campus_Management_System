@@ -9,3 +9,21 @@
 ] [INFO] [Login] User logged in: shagun
 [Thu Dec 11 09:49:16 2025
 ] [INFO] [CourseManager] Course added: Hmt150
+[Fri Dec 12 18:57:30 2025
+] [INFO] [Register] User registered: shagun00
+[Fri Dec 12 19:33:35 2025
+] [WARNING] [Login] Invalid password: shagun00
+[Fri Dec 12 19:37:27 2025
+] [WARNING] [Login] Invalid password: shagun
+[Fri Dec 12 19:39:06 2025
+] [INFO] [Register] User registered: shagun101
+[Fri Dec 12 19:40:10 2025
+] [INFO] [Register] User registered: shagun
+[Fri Dec 12 19:40:39 2025
+] [INFO] [Login] User logged in: shagun
+[Fri Dec 12 19:41:26 2025
+] [INFO] [CourseManager] Course added: 20
+[Fri Dec 12 19:41:26 2025
+] [INFO] [AdminDashboard] Added course: 20 - HMtt
+[Fri Dec 12 19:41:31 2025
+] [INFO] [AdminDashboard] Admin logged out

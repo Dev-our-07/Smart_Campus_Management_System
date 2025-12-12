@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <ctime>
+#include<cstring>
 using namespace std;
 
 Logger ::Logger(){
@@ -23,7 +24,8 @@ void Logger::log(string level, string module, string message)
 
     time_t now = time(0);
     char *dt = ctime(&now);
-    
+    dt[strlen(dt)-1] = '\0';
+
 
     myfile << "[" << dt << "] [" << level << "] [" << module << "] " << message << endl;
     myfile.close();

@@ -1,47 +1,68 @@
+/**
+ * @file main.cpp
+ * @brief Entry point for the Smart Campus Management System.
+ *
+ * This file handles:
+ * - User authentication (login/register)
+ * - Directory setup for user data
+ * - Role-based dashboard routing (Admin, Teacher, Student)
+ */
+
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <filesystem>
+
 #include "../include/auth.h"
 #include "../include/CourseManager.h"
 #include "../include/course.h"
 #include "../include/Logger.h"
 #include "../include/Dashboard.h"
+#include "../include/User.h"
 
 #if defined(__cpp_lib_filesystem)
-namespace fs = std::filesystem; ///< Use standard filesystem if available
+namespace fs = std::filesystem; ///< Use standard filesystem if supported
 #else
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem; ///< Fallback to experimental filesystem
 #endif
 
 /**
- * @brief Main function for the Smart Campus Management System
+ * @brief Main function for SCMS.
  *
- * Handles user authentication (login/register) and course management menu.
-
+ * Initializes required managers, handles authentication, and loads
+ * dashboards based on assigned user roles.
  *
- * @return int Exit status of the program
+ * @return int Program exit status.
  */
-int main(){
-
-    /// Initialize the logger to track all events in the system
+int main()
+{
+    /// Logger to record all program events
     Logger logger("logs/events.log");
 
-
-    /// Authentication object for password hashing and verification
+    /// Authentication handler for hashing and verifying passwords
     Auth auth;
 
-
-    /// CourseManager object to manage courses
+    /// Course manager responsible for reading/writing course data
     CourseManager cm("courses.txt");
 
+    // --------------------------------------------------------
+    //  DATA DIRECTORY SETUP
+    // --------------------------------------------------------
 
-    /// Resolve and create data directory for user files
-    fs::path cwdData("data");                      ///< Current working directory data path
-    fs::path parentData = fs::path("..") / "data"; ///< Parent directory data path
-    fs::path dataDir;
+    fs::path cwdData("data");                      ///< Data directory inside current folder
+    fs::path parentData = fs::path("..") / "data"; ///< Data directory in parent folder
+    fs::path dataDir;                              ///< Chosen valid data directory
 
+    /**
+     * @brief Determine appropriate data directory.
+     *
+     * Priority:
+     * 1. ../data
+     * 2. ./data
+     * 3. Create ../data
+     * 4. Create ./data
+     */
     if (fs::exists(parentData))
         dataDir = parentData;
     else if (fs::exists(cwdData))
@@ -54,124 +75,158 @@ int main(){
         else if (fs::create_directories(cwdData, ec))
             dataDir = cwdData;
         else
-            dataDir = parentData; ///< Fallback if creation fails
+            dataDir = cwdData; ///< Fallback directory
     }
 
-    // ================= Main Menu Loop =================
+    // --------------------------------------------------------
+    //  MAIN MENU LOOP
+    // --------------------------------------------------------
+
     while (true)
     {
-        std::cout << "\n==============O(n v n)O===============" << std::endl;
-        std::cout << "Welcome to Smart Campus Management System" << std::endl;
-        std::cout << "1. Login" << std::endl;
-        std::cout << "2. Register" << std::endl;
-        std::cout << "3. Exit" << std::endl;
+        std::cout << "\n================ SMART CAMPUS MANAGEMENT SYSTEM ================\n";
+        std::cout << "1. Login\n2. Register\n3. Exit\n";
         std::cout << "Enter your choice: ";
 
         int choice;
         std::cin >> choice;
 
-        // ---------------- LOGIN SECTION ----------------
+        // =====================================================
+        //  LOGIN SECTION
+        // =====================================================
         if (choice == 1)
         {
             std::string username, password;
+
             std::cout << "Enter username: ";
-            std::cin >> username;
+            std::cin.ignore();
+            std::getline(std::cin, username);
+
             std::cout << "Enter password: ";
-            std::cin >> password;
+            std::getline(std::cin, password);
 
             fs::path userFile = dataDir / (username + ".txt");
+
+            /**
+             * @brief Attempt to load user file.
+             */
             std::ifstream file(userFile.string());
             if (file.is_open())
             {
-                std::string storedHash;
-                file >> storedHash;
+                std::string storedHash, email, role;
+
+                std::getline(file, storedHash); ///< Line 1: hashed password
+                std::getline(file, email);      ///< Line 2: email address
+                std::getline(file, role);       ///< Line 3: user role
                 file.close();
 
-                /// Verify password
+                /**
+                 * @brief Verify password using Auth class.
+                 */
                 if (auth.verifyPassword(password, storedHash))
                 {
-                    std::cout << "Login successful! Welcome, " << username << std::endl;
+                    std::cout << "Login successful! Welcome " << username << "\n";
+
+                    /// Create logged-in user object
+                    User currentUser(username, email, role);
+                    currentUser.printProfile();
+
                     logger.log("INFO", "Login", "User logged in: " + username);
 
-
-
-                    // read role from file (for simplicity, assume role is stored in the second line)                    std::ifstream roleFile(userFile.string());
-                    std::string role;
-                    std::getline(file, storedHash); // Skip first line
-                    std::getline(file, role);       // Read role
-                    if (role == "Admin")
-                    {
+                    /**
+                     * @brief Route user to role-based dashboards.
+                     */
+                    if (currentUser.getRole() == "Admin")
                         showAdminDashboard(cm, logger);
-                    }
-                    else if (role == "Teacher")
-                    {
-                        showTeacherDashboard( logger);
-                    }
-                    else if (role == "Student")
-                    {
+
+                    else if (currentUser.getRole() == "Teacher")
+                        showTeacherDashboard(logger);
+
+                    else if (currentUser.getRole() == "Student")
                         showStudentDashboard(logger);
-                    }
+
                     else
                     {
-                        std::cout << "Unknown role. Access denied." << std::endl;
-                        logger.log("ERROR", "Login", "Unknown role for user: " + username);
+                        std::cout << "Unknown role. Access denied.\n";
+                        logger.log("ERROR", "Login", "Unknown role for: " + username);
                     }
-                { ///< Wrong password
-                    std::cout << "Invalid credentials!" << std::endl;
-                    logger.log("WARNING", "Login", "Failed login attempt for: " + username);
+                }
+                else
+                {
+                    std::cout << "Invalid credentials!\n";
+                    logger.log("WARNING", "Login", "Invalid password: " + username);
                 }
             }
-        }
             else
-            { ///< User file not found
-                std::cout << "User not found. Please register first." << std::endl;
+            {
+                std::cout << "User not found. Please register first.\n";
             }
         }
 
-        // ---------------- REGISTRATION SECTION ----------------
+        // =====================================================
+        //  REGISTRATION SECTION
+        // =====================================================
         else if (choice == 2)
         {
-            std::string username, password;
+            std::string username, email, password, role;
+
             std::cout << "Enter username: ";
-            std::cin >> username;
+            std::cin.ignore();
+            std::getline(std::cin, username);
+
+            std::cout << "Enter email: ";
+            std::getline(std::cin, email);
+
             std::cout << "Enter password: ";
-            std::cin >> password;
-            std:: cout <<"Select Role: 1. Admin 2. Teacher 3. Student : ";
-           
+            std::getline(std::cin, password);
+
+            std::cout << "Select Role (Admin / Teacher / Student): ";
+            std::getline(std::cin, role);
 
             fs::path userFile = dataDir / (username + ".txt");
             std::ofstream file(userFile.string());
+
+            /**
+             * @brief Write new user data to file.
+             */
             if (file.is_open())
             {
-                std::string hashedPassword = auth.generateHash(password);
-                file << hashedPassword;
+                file << auth.generateHash(password) << "\n"
+                     << email << "\n"
+                     << role << "\n";
+
                 file.close();
-                std::cout << "Registration successful!" << std::endl;
+
+                std::cout << "Registration successful! Role: " << role << "\n";
                 logger.log("INFO", "Register", "User registered: " + username);
             }
             else
-            { ///< Error creating user file
-                std::cout << "Error creating user file!" << std::endl;
-                logger.log("ERROR", "Register", "Failed to create user file: " + userFile.string());
+            {
+                std::cout << "Error creating user file!\n";
+                logger.log("ERROR", "Register",
+                           "Unable to create file: " + userFile.string());
             }
         }
 
-        // ---------------- EXIT ----------------
+        // =====================================================
+        //  EXIT OPTION
+        // =====================================================
         else if (choice == 3)
         {
-            std::cout << "Exiting system. Goodbye!" << std::endl;
-            logger.log("INFO", "MainMenu", "System exited by user.");
+            std::cout << "Exiting system. Goodbye!\n";
+            logger.log("INFO", "MainMenu", "System exited.");
             break;
         }
 
-        // ---------------- INVALID CHOICE ----------------
+        // =====================================================
+        //  INVALID CHOICE HANDLER
+        // =====================================================
         else
         {
-            std::cout << "Invalid choice. Try again." << std::endl;
-            logger.log("WARNING", "MainMenu", "Invalid menu choice entered.");
+            std::cout << "Invalid choice. Try again.\n";
+            logger.log("WARNING", "MainMenu", "Invalid choice entered.");
         }
     }
 
     return 0;
-
 }
