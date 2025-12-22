@@ -8,8 +8,7 @@ using namespace std;
  * @param eml emaiil of the student
  * @param rno roll no of the student
  */
-Student::Student(const string n, const string eml,const string rno)
-    :Person(n,eml){
+Student::Student(const string n, const string eml,const string rno):Person(n,eml){
     rollno=rno;
     }
 
