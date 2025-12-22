@@ -15,3 +15,12 @@
 [Fri Dec 12 19:41:26 2025] [INFO] [CourseManager] Course added: 20
 [Fri Dec 12 19:41:26 2025] [INFO] [AdminDashboard] Added course: 20 - HMtt
 [Fri Dec 12 19:41:31 2025] [INFO] [AdminDashboard] Admin logged out
+[Mon Dec 22 17:45:57 2025] [WARNING] [Login] Invalid password: SHAGUN
+[Mon Dec 22 17:48:02 2025] [INFO] [Register] User registered: diya 
+[Mon Dec 22 17:51:54 2025] [INFO] [Register] User registered: j,h,
+[Mon Dec 22 17:51:57 2025] [INFO] [MainMenu] System exited.
+[Mon Dec 22 17:54:24 2025] [INFO] [Login] User logged in: diya 
+[Mon Dec 22 18:01:00 2025] [INFO] [CourseManager] Course added: 01
+[Mon Dec 22 18:01:00 2025] [INFO] [AdminDashboard] Added course: 01 - hmt maths
+[Mon Dec 22 18:03:12 2025] [INFO] [AdminDashboard] Viewed system logs
+[Mon Dec 22 18:03:26 2025] [INFO] [AdminDashboard] Admin logged out

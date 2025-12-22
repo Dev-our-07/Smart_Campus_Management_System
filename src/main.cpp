@@ -19,6 +19,10 @@
 #include "../include/Logger.h"
 #include "../include/Dashboard.h"
 #include "../include/User.h"
+#include "../include/AttendanceManager.h"
+#include "../include/MarksManager.h"
+#include "../include/Library.h"
+
 
 #if defined(__cpp_lib_filesystem)
 namespace fs = std::filesystem; ///< Use standard filesystem if supported
@@ -45,6 +49,25 @@ int main()
 
     /// Course manager responsible for reading/writing course data
     CourseManager cm("courses.txt");
+
+    /// Attendance manager for handling attendance records
+    AttendanceManager am("attendance.txt");
+
+    // Marks manager for handling exam and marks records
+    MarksManager mm("marks.txt");
+
+   
+
+    
+
+    /// Library manager for handling library operations
+    LibraryManager lib("books.txt");
+
+    
+    
+   
+
+    ///
 
     // --------------------------------------------------------
     //  DATA DIRECTORY SETUP
@@ -140,10 +163,12 @@ int main()
                         showAdminDashboard(cm, logger);
 
                     else if (currentUser.getRole() == "Teacher")
-                        showTeacherDashboard(logger);
+                        showTeacherDashboard(am, mm, lib, logger);
+                    
 
                     else if (currentUser.getRole() == "Student")
-                        showStudentDashboard(logger);
+                        showStudentDashboard(am, mm, lib, logger);
+                    
 
                     else
                     {
