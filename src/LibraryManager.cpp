@@ -1,8 +1,7 @@
-#include "../include/Library.h"
-#include <iostream>
-#include <fstream>
+#include "../include/LibraryManager.h"
+
 using namespace std;
-#include "logger.h"
+
 
 LibraryManager::LibraryManager(string file, string logFile) 
  

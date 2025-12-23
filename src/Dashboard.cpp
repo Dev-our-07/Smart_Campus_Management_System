@@ -4,9 +4,8 @@
 #include "../include/CourseManager.h"
 #include "../include/AttendanceManager.h"
 #include "../include/MarksManager.h"
-#include "../include/Library.h"
-
-
+#include "../include/logger.h"
+#include "../include/LibraryManager.h"
 
 using namespace std;
 
@@ -101,6 +100,7 @@ void showAdminDashboard(CourseManager &cm, Logger &logger)
         }
         case 2:
             cout << "Viewing / Managing Students...\n";
+             
             logger.log("INFO", "AdminDashboard", "Accessed student management");
             break;
         case 3:
@@ -270,7 +270,7 @@ void showTeacherDashboard(AttendanceManager &am, MarksManager &mm, LibraryManage
 
     // -------------------- STUDENT DASHBOARD --------------------
     
-    void showDashboard(AttendanceManager &am, MarksManager &mm, LibraryManager &lib, Logger &logger)
+    void showStudentDashboard(AttendanceManager &am, MarksManager &mm, LibraryManager &lib, Logger &logger)
 
     {
         int choice;

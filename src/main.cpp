@@ -21,8 +21,7 @@
 #include "../include/User.h"
 #include "../include/AttendanceManager.h"
 #include "../include/MarksManager.h"
-#include "../include/Library.h"
-
+#include "../include/LibraryManager.h"
 
 #if defined(__cpp_lib_filesystem)
 namespace fs = std::filesystem; ///< Use standard filesystem if supported
@@ -48,13 +47,13 @@ int main()
     Auth auth;
 
     /// Course manager responsible for reading/writing course data
-    CourseManager cm("courses.txt");
+    CourseManager cm("data/courses.txt");
 
     /// Attendance manager for handling attendance records
     AttendanceManager am("attendance.txt");
 
     // Marks manager for handling exam and marks records
-    MarksManager mm("marks.txt");
+    MarksManager mm("data/marks.txt");
 
    
 

@@ -4,7 +4,8 @@
 #include "../include/CourseManager.h"
 #include "../include/AttendanceManager.h"
 #include "../include/MarksManager.h"
-#include "../include/Library.h"
+#include "../include/LibraryManager.h"
+#include "../include/logger.h"
 void showAdminDashboard(CourseManager& cm,Logger& logger);
 // dashboard.h
 void showTeacherDashboard(AttendanceManager &am, MarksManager &mm, LibraryManager &lib, Logger &logger);

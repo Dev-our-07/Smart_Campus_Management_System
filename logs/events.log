@@ -24,3 +24,25 @@
 [Mon Dec 22 18:01:00 2025] [INFO] [AdminDashboard] Added course: 01 - hmt maths
 [Mon Dec 22 18:03:12 2025] [INFO] [AdminDashboard] Viewed system logs
 [Mon Dec 22 18:03:26 2025] [INFO] [AdminDashboard] Admin logged out
+[Mon Dec 22 22:34:55 2025] [INFO] [Register] User registered: user1
+[Mon Dec 22 22:35:22 2025] [INFO] [Login] User logged in: user1
+[Mon Dec 22 22:36:49 2025] [INFO] [CourseManager] Course added: 02
+[Mon Dec 22 22:36:49 2025] [INFO] [AdminDashboard] Added course: 02 - HMT7301
+[Mon Dec 22 22:37:00 2025] [INFO] [AdminDashboard] Accessed student management
+[Mon Dec 22 22:38:28 2025] [INFO] [AdminDashboard] Viewed all courses
+[Mon Dec 22 22:39:13 2025] [INFO] [AdminDashboard] Admin logged out
+[Mon Dec 22 22:40:45 2025] [INFO] [Register] User registered: user2
+[Mon Dec 22 22:41:12 2025] [WARNING] [Login] Invalid password: user2
+[Mon Dec 22 22:42:03 2025] [INFO] [Login] User logged in: user2
+[Mon Dec 22 22:44:36 2025] [INFO] [AttendanceManager] Attendance marked for course: HMT7301 on 2025-12-25
+[Mon Dec 22 22:44:36 2025] [INFO] [TeacherDashboard] Attendance marked
+[Mon Dec 22 22:45:50 2025] [INFO] [MarksManager] Exam created for HMT7301 on 2025-12-25
+[Mon Dec 22 22:45:50 2025] [INFO] [TeacherDashboard] Exam created
+[Mon Dec 22 22:48:29 2025] [INFO] [TeacherDashboard] Teacher logged out
+[Mon Dec 22 22:49:45 2025] [INFO] [Register] User registered: user3
+[Mon Dec 22 22:50:03 2025] [INFO] [Login] User logged in: user3
+[Mon Dec 22 22:52:48 2025] [INFO] [AttendanceManager] Viewed attendance for student: 2403055
+[Mon Dec 22 22:52:48 2025] [INFO] [StudentDashboard] Viewed attendance
+[Mon Dec 22 22:53:31 2025] [INFO] [MarksManager] Viewed marks for HMT7301
+[Mon Dec 22 22:53:31 2025] [INFO] [StudentDashboard] Viewed marks
+[Mon Dec 22 22:55:20 2025] [INFO] [StudentDashboard] Viewed library status

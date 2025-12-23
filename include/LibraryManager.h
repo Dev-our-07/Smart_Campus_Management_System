@@ -1,5 +1,5 @@
-#ifndef LIBRARY_H
-#define LIBRARY_H
+#ifndef LIBRARY_MANAGER_H
+#define LIBRARY_MANAGER_H
 
 #include <iostream>
 #include <string>
@@ -32,8 +32,7 @@ public:
     void viewBooks();
     void saveBooks();
     void loadBooks();
-    void issueBook();
-    void returnBook();
+  
 };
 
 #endif
